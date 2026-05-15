@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="glass-panel" style="max-width: 600px; margin: 2rem auto; padding: 2.5rem;">
+    <div class="text-center mb-4">
+        <h2 style="color: #34d399;">Employee Self-Registration</h2>
+        <p style="color: var(--text-secondary); margin-top: 0.5rem;">Create your account to view your salary information</p>
+    </div>
+    
+    <form method="POST">
+        <div class="flex gap-4">
+            <div class="form-group" style="flex: 1;">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required placeholder="Choose a secure password">
+        </div>
+
+        <div class="flex gap-4">
+            <div class="form-group" style="flex: 1;">
+                <label class="form-label">Department</label>
+                <select name="department" class="form-control" required>
+                    <option value="" disabled selected>Select Department</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Operations">Operations</option>
+                    <option value="Customer Support">Customer Support</option>
+                </select>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label class="form-label">Designation / Title</label>
+                <input type="text" name="designation" class="form-control" required placeholder="e.g. Frontend Developer">
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-success" style="width: 100%; margin-top: 1rem;">Complete Registration</button>
+    </form>
+
+    <div class="text-center mt-4 pt-4" style="border-top: 1px solid var(--surface-border);">
+        <p style="color: var(--text-secondary);">Already have an account? <a href="{{ url_for('auth.emp_login') }}" style="color: #34d399; text-decoration: none;">Log In Here</a></p>
+    </div>
+</div>
+{% endblock %}

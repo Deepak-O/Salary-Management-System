@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h2>Salary Templates</h2>
+</div>
+
+<div class="flex gap-4">
+    <div class="glass-panel" style="flex: 1; padding: 2rem; align-self: flex-start;">
+        <h3 class="mb-4">Create New Template</h3>
+        <form method="POST">
+            <div class="form-group">
+                <label class="form-label">Template Name</label>
+                <input type="text" name="name" class="form-control" required placeholder="e.g. Senior Developer Tier 1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Basic Pay (₹)</label>
+                <input type="number" step="0.01" name="basic_pay" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Allowances (₹)</label>
+                <input type="number" step="0.01" name="allowances" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Deductions (₹)</label>
+                <input type="number" step="0.01" name="deductions" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Template</button>
+        </form>
+    </div>
+
+    <div class="glass-panel table-container" style="flex: 2; align-self: flex-start;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Template Name</th>
+                    <th>Basic Pay</th>
+                    <th>Allowances</th>
+                    <th>Deductions</th>
+                    <th>Net Pay</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in templates %}
+                <tr>
+                    <td>{{ t.name }}</td>
+                    <td>₹{{ "%.2f"|format(t.basic_pay) }}</td>
+                    <td>₹{{ "%.2f"|format(t.allowances) }}</td>
+                    <td>₹{{ "%.2f"|format(t.deductions) }}</td>
+                    <td style="font-weight: 700;">₹{{ "%.2f"|format(t.basic_pay + t.allowances - t.deductions) }}</td>
+                    <td>
+                        <a href="{{ url_for('hr.delete_template', id=t._id) }}" style="color: var(--danger); text-decoration: none;" onclick="return confirm('Delete this template?');">🗑 Delete</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No templates created yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

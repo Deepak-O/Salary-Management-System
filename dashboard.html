@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="mb-4">
+    <h2>Employee Dashboard</h2>
+    <p style="color: var(--text-secondary);">Welcome back! View your current salary structure, leave statuses, and payslips below.</p>
+</div>
+
+<!-- Current Profile & Active Salary Template -->
+<div class="flex gap-4 mb-4">
+    <div class="glass-panel" style="flex: 1; padding: 2rem;">
+        <h3 class="mb-4" style="color: var(--accent);">My Profile Details</h3>
+        <p><strong>Name:</strong> {{ employee.name }}</p>
+        <p><strong>Email:</strong> {{ employee.email }}</p>
+        <p><strong>Department:</strong> <span style="background: rgba(99,102,241,0.2); padding: 0.2rem 0.5rem; border-radius: 4px; color: #a5b4fc;">{{ employee.department }}</span></p>
+        <p><strong>Designation:</strong> {{ employee.designation }}</p>
+    </div>
+
+    <div class="glass-panel" style="flex: 1; padding: 2rem;">
+        <h3 class="mb-4" style="color: var(--success);">Current Salary Structure</h3>
+        {% if template %}
+            <p><strong>Template Name:</strong> {{ template.name }}</p>
+            <p class="flex justify-between"><span>Basic Pay</span> <span>₹{{ "%.2f"|format(template.basic_pay) }}</span></p>
+            <p class="flex justify-between" style="color: var(--success);"><span>Allowances (+)</span> <span>₹{{ "%.2f"|format(template.allowances) }}</span></p>
+            <p class="flex justify-between" style="color: var(--danger);"><span>Deductions (-)</span> <span>₹{{ "%.2f"|format(template.deductions) }}</span></p>
+            <hr style="border-color: var(--surface-border); margin: 0.75rem 0;">
+            <p class="flex justify-between" style="font-size: 1.25rem; font-weight: 700;"><span>Estimated Net Pay</span> <span>₹{{ "%.2f"|format(template.basic_pay + template.allowances - template.deductions) }}</span></p>
+        {% else %}
+            <p style="color: var(--text-muted);">You have not been assigned a salary structure yet. Please contact HR.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Leave Tracking Dashboard Update -->
+<div class="mb-4 mt-4">
+    <h3 style="color: var(--accent);">My Leave Applications</h3>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">Notice: Any <strong>Approved</strong> leave days will automatically trigger a proportionate deduction during the Payroll run.</p>
+</div>
+
+<div class="glass-panel table-container mb-4">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Applied On</th>
+                <th>Dates</th>
+                <th>Duration</th>
+                <th>Reason</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for l in leaves %}
+            <tr>
+                <td>{{ l.applied_on.strftime('%Y-%m-%d') }}</td>
+                <td>{{ l.start_date }} to {{ l.end_date }}</td>
+                <td>{{ l.days }} Days</td>
+                <td>{{ l.reason }}</td>
+                <td>
+                    {% if l.status == 'Approved' %}
+                        <span style="color: var(--success); font-weight: bold;">{{ l.status }}</span>
+                    {% elif l.status == 'Rejected' %}
+                        <span style="color: var(--danger); font-weight: bold;">{{ l.status }}</span>
+                    {% else %}
+                        <span style="color: #f59e0b; font-weight: bold;">{{ l.status }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="text-center">You have no leave applications.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Historical Payslips -->
+<div class="mb-4 mt-4">
+    <h3 style="color: var(--text-primary);">My Salary History</h3>
+</div>
+
+<div class="glass-panel table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Payroll Period</th>
+                <th>Basic Pay</th>
+                <th>Leaves Docked</th>
+                <th>Net Pay</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in history %}
+            <tr>
+                <td>{{ record.period }}</td>
+                <td>₹{{ "%.2f"|format(record.basic_pay) }}</td>
+                <td style="color: var(--danger);">{{ record.leave_days|default(0) }} days</td>
+                <td style="font-weight: 700;">₹{{ "%.2f"|format(record.net_pay) }}</td>
+                <td>
+                    <a href="{{ url_for('employee.download_payslip', payslip_id=record._id) }}" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Download PDF</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="text-center">No salary records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.667 0 6.667-10 0-10"/></svg>
+            PayFlow Pro
+        </a>
+        <div class="navbar-nav">
+            {% if session.get('user_id') %}
+                {% if session.get('role') == 'hr' %}
+                    <span style="color: var(--text-secondary); font-size: 1rem; margin-right: 1.5rem; user-select: none;">
+                        HR Portal | <strong style="color: var(--accent);">{{ session.get('name') }}</strong>
+                    </span>
+                    <a href="{{ url_for('hr.dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ url_for('hr.templates') }}" class="nav-link">Templates</a>
+                    <a href="{{ url_for('leave.manage_leaves') }}" class="nav-link">Leaves</a>
+                    <a href="{{ url_for('hr.generate_payroll') }}" class="nav-link">Payroll</a>
+                    <a href="{{ url_for('hr.analytics') }}" class="nav-link">Reporting</a>
+                    <a href="{{ url_for('hr.audits') }}" class="nav-link">Audit Log</a>
+                {% else %}
+                    <span style="color: var(--text-secondary); font-size: 1rem; margin-right: 1.5rem; user-select: none;">
+                        Employee Portal | <strong style="color: var(--accent);">{{ session.get('name') }}</strong>
+                    </span>
+                    <a href="{{ url_for('employee.dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ url_for('leave.apply_leave') }}" class="nav-link">Apply Leave</a>
+                {% endif %}
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-danger" style="padding: 0.5rem 1rem; margin-left: 1rem;">Logout</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

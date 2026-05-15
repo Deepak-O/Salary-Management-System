@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="mb-4">
+    <h2>System Audit Logs</h2>
+    <p style="color: var(--text-secondary);">Tracking actions taken within the HR and Payroll system.</p>
+</div>
+
+<div class="glass-panel table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Action</th>
+                <th>Details</th>
+                <th>User Origin ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in audits %}
+            <tr>
+                <td style="color: var(--text-muted); font-size: 0.9em;">{{ a.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td style="font-weight: 600; color: var(--accent);">{{ a.action }}</td>
+                <td>{{ a.details }}</td>
+                <td><code style="background: rgba(0,0,0,0.3); padding: 0.2rem 0.4rem; border-radius: 4px;">{{ a.user_id }}</code></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No audit logs recorded yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="glass-panel" style="max-width: 600px; margin: 2rem auto; padding: 2rem;">
+    <h2 class="mb-4">Generate Payroll Run</h2>
+    <div class="alert alert-info">
+        Leaves dynamically affect the generated salaries! Approved leaves will be deducted proportionally from the Total Working Days.
+    </div>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label class="form-label">Payroll Period (e.g. 05/2026)</label>
+            <input type="text" name="period" class="form-control" placeholder="05/2026" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Total Working Days in Month</label>
+            <input type="number" name="working_days" class="form-control" value="30" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Process Payroll Data</button>
+    </form>
+</div>
+{% endblock %}

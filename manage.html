@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="mb-4">
+    <h2>Leave Management</h2>
+    <p style="color: var(--text-secondary);">Approve or Reject leave requests. Approved days decrease net salary in payroll generation automatically.</p>
+</div>
+
+<div class="glass-panel table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date Applied</th>
+                <th>Employee Name</th>
+                <th>Duration</th>
+                <th>Days Count</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for l in leaves %}
+            <tr>
+                <td style="color: var(--text-muted);">{{ l.applied_on.strftime('%Y-%m-%d') }}</td>
+                <td style="font-weight: 600;">{{ l.employee_name }}</td>
+                <td>{{ l.start_date }} to {{ l.end_date }}</td>
+                <td>{{ l.days }}</td>
+                <td>{{ l.reason }}</td>
+                <td>
+                    {% if l.status == 'Approved' %}
+                        <span style="color: var(--success); font-weight: bold;">{{ l.status }}</span>
+                    {% elif l.status == 'Rejected' %}
+                        <span style="color: var(--danger); font-weight: bold;">{{ l.status }}</span>
+                    {% else %}
+                        <span style="color: #f59e0b; font-weight: bold;">{{ l.status }}</span>
+                    {% endif %}
+                </td>
+                <td class="flex gap-4">
+                    {% if l.status == 'Pending' %}
+                        <a href="{{ url_for('leave.approve_leave', id=l._id) }}" class="btn btn-success" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Approve</a>
+                        <a href="{{ url_for('leave.reject_leave', id=l._id) }}" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Reject</a>
+                    {% else %}
+                        <span style="color: var(--text-muted);">Locked</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No leave applications currently.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

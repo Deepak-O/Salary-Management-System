@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h2>Payroll Analytics & Reporting</h2>
+</div>
+
+<div class="flex gap-4 mb-4">
+    <div class="glass-panel" style="flex: 1; padding: 2rem;">
+        <h3 class="mb-4">Monthly Expenditure</h3>
+        <canvas id="monthlyChart"></canvas>
+    </div>
+    <div class="glass-panel" style="flex: 1; padding: 2rem;">
+        <h3 class="mb-4">Cost by Department</h3>
+        <canvas id="deptChart"></canvas>
+    </div>
+</div>
+
+<script>
+    // Theme colors matching style.css
+    const chartColors = [
+        'rgba(99, 102, 241, 0.8)',
+        'rgba(244, 63, 94, 0.8)',
+        'rgba(16, 185, 129, 0.8)',
+        'rgba(245, 158, 11, 0.8)'
+    ];
+
+    // Monthly Chart
+    const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(ctxMonthly, {
+        type: 'bar',
+        data: {
+            labels: {{ months | tojson }},
+            datasets: [{
+                label: 'Total Net Pay (₹)',
+                data: {{ costs | tojson }},
+                backgroundColor: 'rgba(99, 102, 241, 0.6)',
+                borderColor: 'rgba(99, 102, 241, 1)',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Department Chart
+    const ctxDept = document.getElementById('deptChart').getContext('2d');
+    new Chart(ctxDept, {
+        type: 'doughnut',
+        data: {
+            labels: {{ depts | tojson }},
+            datasets: [{
+                data: {{ d_costs | tojson }},
+                backgroundColor: chartColors,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } }
+        }
+    });
+</script>
+{% endblock %}
